@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lilpromptofficial.github.io/links/sitemap.xml
