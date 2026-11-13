@@ -38,8 +38,7 @@
     "https://www.tiktok.com/@lil.prompt.official",
     "https://suno.com/@lilpromptofficial",
     "https://open.spotify.com/artist/2Ed1jtvbayhGfa4ChkqSIq",
-    "https://music.apple.com/us/artist/lil-prompt-official/1857277870",
-    "https://linktr.ee/Vitaliy_AI"
+    "https://music.apple.com/us/artist/lil-prompt-official/1857277870"
   ]
 }
 </script>
@@ -347,7 +346,8 @@ button{font:inherit;color:inherit;}
 .pill-ch svg{width:22px;height:22px;fill:currentColor;}
 
 /* sound waves */
-.wave{display:flex;align-items:center;gap:3px;height:64px;padding:0 4px;cursor:pointer;flex:0 0 auto;}
+.wave{display:flex;align-items:center;gap:3px;height:64px;padding:0 4px;cursor:pointer;flex:0 0 auto;
+  background:none;border:0;color:inherit;font:inherit;-webkit-tap-highlight-color:transparent;}
 .wave i{
   display:block;width:2.5px;height:calc(var(--h) * 1px);min-height:2.5px;border-radius:3px;
   background:linear-gradient(180deg,var(--pink-hot),var(--pink-deep));
@@ -355,6 +355,21 @@ button{font:inherit;color:inherit;}
   transform-origin:center;
 }
 .wave.on i{animation:eq var(--d) ease-in-out var(--dl) infinite alternate;}
+/* while the song plays the bars follow the real sound (set from the script) */
+.wave.live i{animation:none !important;transition:transform .08s linear;}
+
+/* the song: the left wave is its play / pause button, the caption sits under it */
+.player{position:relative;flex:0 0 auto;display:flex;}
+.track{
+  position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:2px;
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap;pointer-events:none;
+  font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--pink-hot);
+}
+.track svg{width:8px;height:8px;fill:currentColor;flex-shrink:0;}
+.track .ic-pause{display:none;}
+.player.playing .track .ic-play{display:none;}
+.player.playing .track .ic-pause{display:block;}
+.wave:focus-visible{outline:2px solid var(--pink-hot);outline-offset:4px;border-radius:10px;}
 @keyframes eq{
   0%{transform:scaleY(.25);}
   50%{transform:scaleY(1.15);}
@@ -382,9 +397,10 @@ button{font:inherit;color:inherit;}
 .start-brush .arr{width:1.05em;height:1.05em;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--spring);}
 .start:hover .start-brush{transform:rotate(-2deg) scale(1.03);}
 .start:hover .arr{transform:translateX(5px);}
-.start-sub{height:48px;padding:0 18px;font-size:.88rem;gap:10px;}
-.start-sub svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
-.start:hover .start-sub{border-color:rgba(240,85,155,.75);}
+/* what Start here is about: the learning side, not the official channels */
+.start-note{display:flex;flex-direction:column;gap:4px;max-width:310px;text-align:right;
+  font-size:.82rem;line-height:1.4;color:var(--muted);}
+.start-note b{color:var(--text);font-weight:700;font-size:.9rem;}
 
 /* ================= footer ================= */
 .footer{position:relative;z-index:3;margin-top:clamp(40px,5vw,70px);padding:28px 0 36px;border-top:1px solid var(--line);
@@ -413,6 +429,7 @@ button{font:inherit;color:inherit;}
   .vcard:nth-child(4){grid-column:2 / span 2;}
   .row{grid-template-columns:1fr;gap:16px;}
   .start{margin-left:0;}
+  .start-note{text-align:left;}
   .channels-body{gap:18px;}
 }
 
@@ -473,13 +490,15 @@ button{font:inherit;color:inherit;}
   .row{padding:24px 0;}
   .music-body{flex-direction:column;align-items:stretch;}
   .music-body .wave.r{display:none;}
-  .music-body .wave.l{align-self:center;order:2;margin-top:4px;}
+  .music-body .player{align-self:center;order:2;margin-top:4px;flex-direction:column;align-items:center;}
+  .music-body .track{position:static;transform:none;margin-top:0;}
   .music-links{flex-direction:column;}
   .pill-music{width:100%;justify-content:flex-start;padding:0 20px;}
   .ch-links{display:grid;grid-template-columns:1fr 1fr;width:100%;}
   .ch-links .pill-ch:last-child{grid-column:1 / -1;justify-self:center;width:calc(50% - 6px);}
   .pill-ch{justify-content:flex-start;}
   .start{flex-direction:column;width:100%;gap:16px;margin-top:10px;}
+  .start-note{text-align:center;max-width:none;align-items:center;}
   .start-brush{font-size:2rem;}
   .footer{flex-direction:column;align-items:center;text-align:center;}
 }
@@ -504,7 +523,7 @@ button{font:inherit;color:inherit;}
       <a href="#videos" data-sec="videos">Videos</a>
       <a href="#music" data-sec="music">Music</a>
       <a href="#channels" data-sec="channels">Channels</a>
-      <a class="ext" href="https://linktr.ee/Vitaliy_AI" target="_blank" rel="noopener">Learning Hub &amp; Contacts<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+      <a href="learn.html">Learning Hub</a>
     </nav>
     <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span></button>
   </div>
@@ -629,7 +648,14 @@ button{font:inherit;color:inherit;}
       <section class="row" id="music" aria-labelledby="music-label">
         <h2 class="label" id="music-label">Music<svg viewBox="0 0 180 22" aria-hidden="true" preserveAspectRatio="none"><path d="M2 20 C 40 10, 100 5, 178 3 C 120 9, 60 15, 10 22 Z"/></svg></h2>
         <div class="row-body music-body">
-          <div class="wave l" data-wave aria-hidden="true"></div>
+          <div class="player" id="player">
+            <button class="wave l" data-wave type="button" id="song-btn" aria-pressed="false" aria-label="Play “Generational Dispute”"></button>
+            <span class="track" aria-hidden="true">
+              <svg class="ic-play" viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>
+              <svg class="ic-pause" viewBox="0 0 10 10"><path d="M1 0h3v10H1zM6 0h3v10H6z"/></svg>
+              <span class="track-name">Generational Dispute</span>
+            </span>
+          </div>
           <div class="music-links">
             <a class="pill pill-music" href="https://open.spotify.com/artist/2Ed1jtvbayhGfa4ChkqSIq" target="_blank" rel="noopener">
               <svg class="ic-spotify" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.840c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
@@ -646,6 +672,7 @@ button{font:inherit;color:inherit;}
           </div>
           <div class="wave r" data-wave aria-hidden="true"></div>
         </div>
+        <audio id="song" src="audio/generational-dispute.mp3" preload="none"></audio>
       </section>
 
       <section class="row" id="channels" aria-labelledby="channels-label">
@@ -674,7 +701,11 @@ button{font:inherit;color:inherit;}
             </a>
           </div>
 
-          <a class="start" href="https://linktr.ee/Vitaliy_AI" target="_blank" rel="noopener">
+          <a class="start" href="learn.html">
+            <span class="start-note">
+              <b>Want to make AI videos like these?</b>
+              Courses by AI_Vitaliy, the creator behind Lil Prompt
+            </span>
             <span class="start-brush">
               <svg class="bg" viewBox="0 0 320 100" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M14 22 C 22 12, 40 14, 58 10 C 110 4, 180 6, 250 4 C 278 3, 300 6, 312 14 C 318 30, 314 44, 318 58 C 320 72, 312 86, 298 90 C 240 96, 170 92, 100 96 C 66 98, 34 96, 16 90 C 6 80, 10 66, 4 52 C 2 40, 6 30, 14 22 Z"/>
@@ -684,10 +715,6 @@ button{font:inherit;color:inherit;}
               </svg>
               Start here
               <svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17"/><path d="M14 6l6 6-6 6"/></svg>
-            </span>
-            <span class="pill start-sub">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/><path d="M22 9v5"/></svg>
-              Learning Hub &amp; Contacts
             </span>
           </a>
         </div>
@@ -774,17 +801,73 @@ button{font:inherit;color:inherit;}
       p.addEventListener('mouseenter', function () { animateWaves(true); });
       p.addEventListener('mouseleave', function () { animateWaves(false); });
     });
-  } else {
-    var t;
-    waves.forEach(function (w) {
-      w.addEventListener('click', function () {
-        clearTimeout(t);
-        var on = !w.classList.contains('on');
-        animateWaves(on);
-        if (on) t = setTimeout(function () { animateWaves(false); }, 4000);
+  }
+
+  /* the song "Generational Dispute": a click on a wave plays it, the next click stops it.
+     While it plays, the bars follow the real sound through a Web Audio analyser. */
+  var song = document.getElementById('song');
+  var songBtn = document.getElementById('song-btn');
+  var player = document.getElementById('player');
+  var bars = waves.map(function (w) { return Array.prototype.slice.call(w.querySelectorAll('i')); });
+  var actx = null, analyser = null, freq = null, raf = 0;
+
+  function setupAnalyser() {
+    if (actx || reduce) return;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      actx = new AC();
+      var src = actx.createMediaElementSource(song);
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.75;
+      src.connect(analyser);
+      analyser.connect(actx.destination);
+      freq = new Uint8Array(analyser.frequencyBinCount);
+    } catch (e) { actx = null; analyser = null; }
+  }
+  function drawBars() {
+    analyser.getByteFrequencyData(freq);
+    var mid = (BARS - 1) / 2;
+    bars.forEach(function (list, wi) {
+      list.forEach(function (b, i) {
+        var d = Math.abs(i - mid) / mid;                       // 0 in the middle .. 1 at the edges
+        var bin = 2 + Math.round(d * 52) + wi;                 // bass in the middle, highs at the edges
+        var v = freq[bin] / 255;
+        b.style.transform = 'scaleY(' + (0.15 + v * 1.15).toFixed(3) + ')';
       });
     });
+    raf = requestAnimationFrame(drawBars);
   }
+  function setPlaying(on) {
+    player.classList.toggle('playing', on);
+    songBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    songBtn.setAttribute('aria-label', (on ? 'Pause' : 'Play') + ' “Generational Dispute”');
+    cancelAnimationFrame(raf);
+    if (on && analyser) {
+      waves.forEach(function (w) { w.classList.add('live'); });
+      drawBars();
+    } else {
+      waves.forEach(function (w) { w.classList.remove('live'); });
+      bars.forEach(function (list) { list.forEach(function (b) { b.style.transform = ''; }); });
+      animateWaves(on);                                         // no analyser: the old dance
+    }
+  }
+  function toggleSong() {
+    if (song.paused) {
+      setupAnalyser();
+      if (actx && actx.state === 'suspended') actx.resume();
+      var p = song.play();
+      if (p && p.catch) p.catch(function () { setPlaying(false); });
+    } else {
+      song.pause();
+    }
+  }
+  function pauseSong() { if (!song.paused) song.pause(); }
+
+  waves.forEach(function (w) { w.addEventListener('click', toggleSong); });
+  song.addEventListener('play', function () { setPlaying(true); });
+  song.addEventListener('pause', function () { setPlaying(false); });
+  song.addEventListener('ended', function () { song.currentTime = 0; setPlaying(false); });
 
   /* videos: the YouTube player loads only when a video is started.
      Wider screens: it opens large in the stage above the covers.
@@ -806,6 +889,7 @@ button{font:inherit;color:inherit;}
     };
   }
   function makeIframe(id, title) {
+    pauseSong();
     var ifr = document.createElement('iframe');
     ifr.src = 'https://www.youtube-nocookie.com/embed/' + id +
       '?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3';
@@ -882,453 +966,8 @@ button{font:inherit;color:inherit;}
     current = null;
   });
   document.getElementById('hero-play').addEventListener('click', function () { play(cards[0]); });
-
-  /* living fog: a small real-time fluid simulation (approach after Pavel Dobryakov's
-     WebGL-Fluid-Simulation, MIT licence). Soft emitters near the ground keep the fog
-     creeping; the mouse or a finger pushes the air, so the fog swirls and billows.
-     Without WebGL + half-float textures the static smoke pictures stay in place. */
-  (function () {
-    var canvases = Array.prototype.slice.call(document.querySelectorAll('canvas[data-fog]'));
-    if (!canvases.length) return;
-    var small = Math.min(window.innerWidth, window.innerHeight) < 600;
-
-    var CFG = {
-      SIM: small ? 96 : 128,          /* velocity grid (short side) */
-      DYE: small ? 384 : 640,         /* fog density grid (short side) */
-      ITER: small ? 14 : 20,          /* pressure solver iterations */
-      PRESSURE: 0.8,
-      CURL: 10,                       /* how eagerly small eddies curl up */
-      VEL_DISS: 0.35,
-      DENS_DISS: 0.42,
-      EMIT_EVERY: 0.05,               /* seconds between ambient puffs */
-      TIME: 0.5,                      /* the whole fog lives at half speed */
-      OPACITY: 0.45,                  /* calm fog: light and see-through */
-      TOUCH: 1 / 3,                   /* on touch: a third thicker and faster */
-      GATHER: 0.62,                   /* on touch: how fast the fog is drawn to the point */
-      GATHER_R: 0.32,                 /* ...and from how far around it */
-      FORCE: 1600,                    /* gentle push along the pointer's path */
-      MAX_PUSH: 220                   /* cap, so a fast flick cannot tear the fog apart */
-    };
-
-    var VS = [
-      'precision highp float;',
-      'attribute vec2 aPosition;',
-      'varying vec2 vUv, vL, vR, vT, vB;',
-      'uniform vec2 texelSize;',
-      'void main(){',
-      ' vUv=aPosition*.5+.5;',
-      ' vL=vUv-vec2(texelSize.x,0.); vR=vUv+vec2(texelSize.x,0.);',
-      ' vT=vUv+vec2(0.,texelSize.y); vB=vUv-vec2(0.,texelSize.y);',
-      ' gl_Position=vec4(aPosition,0.,1.);',
-      '}'].join('\n');
-    var P = 'precision highp float; precision highp sampler2D;\nvarying vec2 vUv, vL, vR, vT, vB;\n';
-    var FS = {
-      clear: P + 'uniform sampler2D uTexture; uniform float value;' +
-        'void main(){gl_FragColor=value*texture2D(uTexture,vUv);}',
-      splat: P + 'uniform sampler2D uTarget; uniform float aspectRatio; uniform vec3 color; uniform vec2 point; uniform float radius;' +
-        'void main(){vec2 p=vUv-point; p.x*=aspectRatio; vec3 s=exp(-dot(p,p)/radius)*color;' +
-        'gl_FragColor=vec4(texture2D(uTarget,vUv).xyz+s,1.);}',
-      advect: P + 'uniform sampler2D uVelocity; uniform sampler2D uSource; uniform vec2 texelSize; uniform vec2 dyeTexelSize; uniform float dt; uniform float dissipation;' +
-        'vec4 bilerp(sampler2D sam, vec2 uv, vec2 tsize){vec2 st=uv/tsize-.5; vec2 iuv=floor(st); vec2 fuv=fract(st);' +
-        'vec4 a=texture2D(sam,(iuv+vec2(.5,.5))*tsize), b=texture2D(sam,(iuv+vec2(1.5,.5))*tsize),' +
-        'c=texture2D(sam,(iuv+vec2(.5,1.5))*tsize), d=texture2D(sam,(iuv+vec2(1.5,1.5))*tsize);' +
-        'return mix(mix(a,b,fuv.x),mix(c,d,fuv.x),fuv.y);}' +
-        'void main(){\n' +
-        '#ifdef MANUAL_FILTERING\n' +
-        ' vec2 coord=vUv-dt*bilerp(uVelocity,vUv,texelSize).xy*texelSize; vec4 r=bilerp(uSource,coord,dyeTexelSize);\n' +
-        '#else\n' +
-        ' vec2 coord=vUv-dt*texture2D(uVelocity,vUv).xy*texelSize; vec4 r=texture2D(uSource,coord);\n' +
-        '#endif\n' +
-        ' gl_FragColor=r/(1.+dissipation*dt);}',
-      divergence: P + 'uniform sampler2D uVelocity;' +
-        'void main(){float L=texture2D(uVelocity,vL).x, R=texture2D(uVelocity,vR).x, T=texture2D(uVelocity,vT).y, B=texture2D(uVelocity,vB).y;' +
-        'vec2 C=texture2D(uVelocity,vUv).xy; if(vL.x<0.)L=-C.x; if(vR.x>1.)R=-C.x; if(vT.y>1.)T=-C.y; if(vB.y<0.)B=-C.y;' +
-        'gl_FragColor=vec4(.5*(R-L+T-B),0.,0.,1.);}',
-      curl: P + 'uniform sampler2D uVelocity;' +
-        'void main(){float L=texture2D(uVelocity,vL).y, R=texture2D(uVelocity,vR).y, T=texture2D(uVelocity,vT).x, B=texture2D(uVelocity,vB).x;' +
-        'gl_FragColor=vec4(.5*(R-L-T+B),0.,0.,1.);}',
-      vorticity: P + 'uniform sampler2D uVelocity; uniform sampler2D uCurl; uniform float curl; uniform float dt;' +
-        'void main(){float L=texture2D(uCurl,vL).x, R=texture2D(uCurl,vR).x, T=texture2D(uCurl,vT).x, B=texture2D(uCurl,vB).x, C=texture2D(uCurl,vUv).x;' +
-        'vec2 f=.5*vec2(abs(T)-abs(B),abs(R)-abs(L)); f/=length(f)+.0001; f*=curl*C; f.y*=-1.;' +
-        'vec2 v=texture2D(uVelocity,vUv).xy+f*dt; gl_FragColor=vec4(clamp(v,-1000.,1000.),0.,1.);}',
-      pressure: P + 'uniform sampler2D uPressure; uniform sampler2D uDivergence;' +
-        'void main(){float L=texture2D(uPressure,vL).x, R=texture2D(uPressure,vR).x, T=texture2D(uPressure,vT).x, B=texture2D(uPressure,vB).x;' +
-        'gl_FragColor=vec4((L+R+B+T-texture2D(uDivergence,vUv).x)*.25,0.,0.,1.);}',
-      gradient: P + 'uniform sampler2D uPressure; uniform sampler2D uVelocity;' +
-        'void main(){float L=texture2D(uPressure,vL).x, R=texture2D(uPressure,vR).x, T=texture2D(uPressure,vT).x, B=texture2D(uPressure,vB).x;' +
-        'vec2 v=texture2D(uVelocity,vUv).xy-vec2(R-L,T-B); gl_FragColor=vec4(v,0.,1.);}',
-      /* draws the fog in towards a point (sampling from further out pulls it inwards) */
-      gather: P + 'uniform sampler2D uSource; uniform vec2 point; uniform float aspectRatio; uniform float radius; uniform float amount;' +
-        'void main(){vec2 d=vUv-point; vec2 e=d; e.x*=aspectRatio; float f=exp(-dot(e,e)/(radius*radius));' +
-        'gl_FragColor=texture2D(uSource,vUv+d*amount*f);}',
-      /* colour the density: deep magenta veils, pink body, a hot pink core.
-         uShape: x = how high the fog may reach, y = fade at the bottom edge, z = thickness, w = opacity */
-      display: P + 'uniform sampler2D uTexture; uniform vec4 uShape; uniform vec4 uTouch; uniform float uTouchR;' +
-        'void main(){float v=max(texture2D(uTexture,vUv).r,0.);' +
-        'float d=1.-exp(-v*uShape.z);' +
-        'd*=1.-smoothstep(uShape.x*.45,uShape.x,vUv.y);' +
-        'if(uShape.y>0.) d*=smoothstep(0.,uShape.y,vUv.y);' +
-        'vec3 deep=vec3(.42,.09,.30), pink=vec3(.95,.36,.63), hot=vec3(1.,.64,.82);' +
-        'vec3 col=mix(deep,pink,smoothstep(.04,.5,d)); col=mix(col,hot,smoothstep(.55,1.,d)*.45);' +
-        'vec2 e=vUv-uTouch.xy; e.x*=uTouch.w; float near=exp(-dot(e,e)/(uTouchR*uTouchR));' +
-        'float a=d*uShape.w*(1.+uTouch.z*near); gl_FragColor=vec4(col*a,a);}'
-    };
-
-    function makeFog(canvas) {
-      var opts = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false, premultipliedAlpha: true };
-      var gl = canvas.getContext('webgl2', opts), gl2 = !!gl;
-      if (!gl) gl = canvas.getContext('webgl', opts);
-      if (!gl) throw new Error('no webgl');
-      var linear, type;
-      if (gl2) { gl.getExtension('EXT_color_buffer_float'); linear = gl.getExtension('OES_texture_float_linear'); type = gl.HALF_FLOAT; }
-      else {
-        var hf = gl.getExtension('OES_texture_half_float');
-        linear = gl.getExtension('OES_texture_half_float_linear');
-        type = hf && hf.HALF_FLOAT_OES;
-      }
-      if (!type) throw new Error('no half float');
-
-      function renderable(internal, format) {
-        var t = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, t);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, internal, 4, 4, 0, format, type, null);
-        var f = gl.createFramebuffer();
-        gl.bindFramebuffer(gl.FRAMEBUFFER, f);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
-        var ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.deleteFramebuffer(f); gl.deleteTexture(t);
-        return ok;
-      }
-      function format(internal, fmt) {
-        if (renderable(internal, fmt)) return { internal: internal, format: fmt };
-        if (gl2 && internal === gl.R16F) return format(gl.RG16F, gl.RG);
-        if (gl2 && internal === gl.RG16F) return format(gl.RGBA16F, gl.RGBA);
-        return null;
-      }
-      var fRGBA = gl2 ? format(gl.RGBA16F, gl.RGBA) : format(gl.RGBA, gl.RGBA);
-      var fRG = gl2 ? format(gl.RG16F, gl.RG) : fRGBA;
-      var fR = gl2 ? format(gl.R16F, gl.RED) : fRGBA;
-      if (!fRGBA || !fRG || !fR) throw new Error('no renderable half float');
-
-      function compile(kind, src, defs) {
-        var s = gl.createShader(kind);
-        gl.shaderSource(s, (defs ? defs + '\n' : '') + src);
-        gl.compileShader(s);
-        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
-        return s;
-      }
-      var vs = compile(gl.VERTEX_SHADER, VS);
-      function program(fs, defs) {
-        var p = gl.createProgram();
-        gl.attachShader(p, vs);
-        gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs, defs));
-        gl.bindAttribLocation(p, 0, 'aPosition');
-        gl.linkProgram(p);
-        if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
-        var u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
-        for (var i = 0; i < n; i++) { var name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name); }
-        return { p: p, u: u };
-      }
-      var prg = {};
-      Object.keys(FS).forEach(function (k) {
-        prg[k] = program(FS[k], (k === 'advect' && !linear) ? '#define MANUAL_FILTERING' : '');
-      });
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.STATIC_DRAW);
-      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(0);
-
-      function blit(target) {
-        if (target) { gl.viewport(0, 0, target.w, target.h); gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo); }
-        else { gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight); gl.bindFramebuffer(gl.FRAMEBUFFER, null); }
-        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-      }
-      function fbo(w, h, f, filter) {
-        gl.activeTexture(gl.TEXTURE0);
-        var t = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, t);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, f.internal, w, h, 0, f.format, type, null);
-        var b = gl.createFramebuffer();
-        gl.bindFramebuffer(gl.FRAMEBUFFER, b);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
-        gl.viewport(0, 0, w, h); gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT);
-        return { tex: t, fbo: b, w: w, h: h, attach: function (id) { gl.activeTexture(gl.TEXTURE0 + id); gl.bindTexture(gl.TEXTURE_2D, t); return id; } };
-      }
-      function dbl(w, h, f, filter) {
-        var a = fbo(w, h, f, filter), b = fbo(w, h, f, filter);
-        return { w: w, h: h, read: a, write: b, swap: function () { var t = this.read; this.read = this.write; this.write = t; } };
-      }
-      function res(n) {
-        var cw = gl.drawingBufferWidth, ch = gl.drawingBufferHeight, ar = cw / ch;
-        if (ar < 1) ar = 1 / ar;
-        var lo = Math.round(n), hi = Math.round(n * ar);
-        return cw > ch ? { w: hi, h: lo } : { w: lo, h: hi };
-      }
-
-      var top = parseFloat(canvas.getAttribute('data-top') || '0.8');
-      var fade = parseFloat(canvas.getAttribute('data-fade') || '0');
-      var thick = parseFloat(canvas.getAttribute('data-density') || '2');
-      var spread = parseFloat(canvas.getAttribute('data-spread') || '0.35');
-      var middle = parseFloat(canvas.getAttribute('data-middle') || '0.2');
-      var vel, dye, div, curlT, pres, emitAcc = 0;
-
-      function init() {
-        var filter = linear ? gl.LINEAR : gl.NEAREST;
-        var s = res(CFG.SIM), d = res(CFG.DYE);
-        vel = dbl(s.w, s.h, fRG, filter);
-        dye = dbl(d.w, d.h, fR, filter);
-        div = fbo(s.w, s.h, fR, gl.NEAREST);
-        curlT = fbo(s.w, s.h, fR, gl.NEAREST);
-        pres = dbl(s.w, s.h, fR, gl.NEAREST);
-      }
-
-      function splat(x, y, dx, dy, amount, radius) {
-        var ar = canvas.width / canvas.height;
-        var r = radius * (ar > 1 ? ar : 1);
-        var p = prg.splat; gl.useProgram(p.p);
-        gl.uniform1i(p.u.uTarget, vel.read.attach(0));
-        gl.uniform1f(p.u.aspectRatio, ar);
-        gl.uniform2f(p.u.point, x, y);
-        gl.uniform3f(p.u.color, dx, dy, 0);
-        gl.uniform1f(p.u.radius, r);
-        blit(vel.write); vel.swap();
-        if (amount) {
-          gl.uniform1i(p.u.uTarget, dye.read.attach(0));
-          gl.uniform3f(p.u.color, amount, 0, 0);
-          blit(dye.write); dye.swap();
-        }
-      }
-
-      /* ambient fog: soft puffs low over the ground, mostly from the corners,
-         drifting sideways towards the middle and only slightly upwards */
-      function emit() {
-        var x, dir;
-        if (Math.random() < middle) { x = 0.2 + Math.random() * 0.6; dir = Math.random() < 0.5 ? -1 : 1; }
-        else if (Math.random() < 0.5) { x = Math.random() * spread; dir = 1; }
-        else { x = 1 - Math.random() * spread; dir = -1; }
-        var y = fade * 0.9 + 0.02 + Math.random() * 0.14;
-        /* wide, thin puffs: the fog spreads far and stays light */
-        splat(x, y, dir * (18 + Math.random() * 40), 4 + Math.random() * 14,
-              0.13 + Math.random() * 0.17, 0.0038 + Math.random() * 0.0052);
-      }
-
-      function gather(u, v, amount) {
-        var p = prg.gather; gl.useProgram(p.p);
-        gl.uniform1i(p.u.uSource, dye.read.attach(0));
-        gl.uniform2f(p.u.point, u, v);
-        gl.uniform1f(p.u.aspectRatio, canvas.width / canvas.height);
-        gl.uniform1f(p.u.radius, CFG.GATHER_R);
-        gl.uniform1f(p.u.amount, amount);
-        blit(dye.write); dye.swap();
-      }
-
-      function step(dt) {
-        gl.disable(gl.BLEND);
-        var tx = 1 / vel.w, ty = 1 / vel.h, p;
-        p = prg.curl; gl.useProgram(p.p);
-        gl.uniform2f(p.u.texelSize, tx, ty);
-        gl.uniform1i(p.u.uVelocity, vel.read.attach(0));
-        blit(curlT);
-
-        p = prg.vorticity; gl.useProgram(p.p);
-        gl.uniform2f(p.u.texelSize, tx, ty);
-        gl.uniform1i(p.u.uVelocity, vel.read.attach(0));
-        gl.uniform1i(p.u.uCurl, curlT.attach(1));
-        gl.uniform1f(p.u.curl, CFG.CURL);
-        gl.uniform1f(p.u.dt, dt);
-        blit(vel.write); vel.swap();
-
-        p = prg.divergence; gl.useProgram(p.p);
-        gl.uniform2f(p.u.texelSize, tx, ty);
-        gl.uniform1i(p.u.uVelocity, vel.read.attach(0));
-        blit(div);
-
-        p = prg.clear; gl.useProgram(p.p);
-        gl.uniform1i(p.u.uTexture, pres.read.attach(0));
-        gl.uniform1f(p.u.value, CFG.PRESSURE);
-        blit(pres.write); pres.swap();
-
-        p = prg.pressure; gl.useProgram(p.p);
-        gl.uniform2f(p.u.texelSize, tx, ty);
-        gl.uniform1i(p.u.uDivergence, div.attach(0));
-        for (var i = 0; i < CFG.ITER; i++) {
-          gl.uniform1i(p.u.uPressure, pres.read.attach(1));
-          blit(pres.write); pres.swap();
-        }
-
-        p = prg.gradient; gl.useProgram(p.p);
-        gl.uniform2f(p.u.texelSize, tx, ty);
-        gl.uniform1i(p.u.uPressure, pres.read.attach(0));
-        gl.uniform1i(p.u.uVelocity, vel.read.attach(1));
-        blit(vel.write); vel.swap();
-
-        p = prg.advect; gl.useProgram(p.p);
-        gl.uniform2f(p.u.texelSize, tx, ty);
-        if (!linear) gl.uniform2f(p.u.dyeTexelSize, tx, ty);
-        var v = vel.read.attach(0);
-        gl.uniform1i(p.u.uVelocity, v);
-        gl.uniform1i(p.u.uSource, v);
-        gl.uniform1f(p.u.dt, dt);
-        gl.uniform1f(p.u.dissipation, CFG.VEL_DISS);
-        blit(vel.write); vel.swap();
-
-        if (!linear) gl.uniform2f(p.u.dyeTexelSize, 1 / dye.w, 1 / dye.h);
-        gl.uniform1i(p.u.uVelocity, vel.read.attach(0));
-        gl.uniform1i(p.u.uSource, dye.read.attach(1));
-        gl.uniform1f(p.u.dissipation, CFG.DENS_DISS);
-        blit(dye.write); dye.swap();
-      }
-
-      function render(act) {
-        gl.disable(gl.BLEND);
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-        gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-        var p = prg.display; gl.useProgram(p.p);
-        gl.uniform1i(p.u.uTexture, dye.read.attach(0));
-        gl.uniform4f(p.u.uShape, top, fade, thick, CFG.OPACITY);
-        /* around the touch the fog gets a third thicker */
-        gl.uniform4f(p.u.uTouch, gu, gv, (act || 0) * CFG.TOUCH, canvas.width / canvas.height);
-        gl.uniform1f(p.u.uTouchR, CFG.GATHER_R * 0.9);
-        blit(null);
-      }
-
-      function size() {
-        var r = canvas.getBoundingClientRect();
-        var q = small ? 0.6 : 0.75;     /* fog is soft; a lighter canvas is plenty */
-        return { w: Math.max(2, Math.round(r.width * q)), h: Math.max(2, Math.round(r.height * q)) };
-      }
-      function warm(n) {
-        for (var i = 0; i < n; i++) {
-          emitAcc += 1 / 60;
-          while (emitAcc > CFG.EMIT_EVERY) { emitAcc -= CFG.EMIT_EVERY; emit(); }
-          step(1 / 60);
-        }
-      }
-
-      var gu = 0.5, gv = 0.5;  /* last touch point (uv) */
-      var sz = size();
-      canvas.width = sz.w; canvas.height = sz.h;
-      init();
-      warm(small ? 150 : 210);           /* start with fog already lying there */
-      render();
-
-      var pend = null;   /* pointer motion gathered since the last frame */
-      var act = 0;       /* 0 = calm, 1 = being touched; eases between the two */
-      var touchUntil = -1;
-      return {
-        canvas: canvas, visible: false,
-        tick: function (dt) {
-          var now = performance.now();
-          var target = now < touchUntil ? 1 : 0;
-          act += (target - act) * Math.min(1, dt * (target ? 5 : 1.4));
-          /* calm: half speed; touched: a third faster than that */
-          var sdt = dt * CFG.TIME * (1 + act * CFG.TOUCH);
-          if (pend) {
-            var m = Math.sqrt(pend.dx * pend.dx + pend.dy * pend.dy);
-            var k = m > CFG.MAX_PUSH ? CFG.MAX_PUSH / m : 1;
-            splat(pend.u, pend.v, pend.dx * k, pend.dy * k, 0, 0.003);
-            pend = null;
-          }
-          emitAcc += sdt;
-          while (emitAcc > CFG.EMIT_EVERY) { emitAcc -= CFG.EMIT_EVERY; emit(); }
-          step(sdt);
-          if (act > 0.01) gather(gu, gv, CFG.GATHER * sdt * act);   /* fog flocks to the touch */
-          render(act);
-        },
-        release: function () { if (touchUntil > performance.now()) touchUntil = performance.now() + 250; },
-        resize: function () {
-          var s = size();
-          if (Math.abs(s.w - canvas.width) < 8 && Math.abs(s.h - canvas.height) < 8) return;
-          canvas.width = s.w; canvas.height = s.h;
-          init(); warm(90); render();
-        },
-        /* x, y, mx, my in page pixels */
-        poke: function (x, y, mx, my, burst) {
-          var r = canvas.getBoundingClientRect();
-          if (x < r.left || x > r.right || y < r.top || y > r.bottom) return;
-          var u = (x - r.left) / r.width, v = 1 - (y - r.top) / r.height;
-          gu = u; gv = v;
-          /* a finger stays "touching" until it lifts; the mouse while it keeps moving */
-          touchUntil = performance.now() + (burst ? 600000 : 300);
-          if (burst) return;
-          var dx = mx / r.width * CFG.FORCE, dy = -my / r.height * CFG.FORCE;
-          if (pend) { pend.u = u; pend.v = v; pend.dx += dx; pend.dy += dy; }
-          else pend = { u: u, v: v, dx: dx, dy: dy };
-        }
-      };
-    }
-
-    var fogs = [];
-    document.documentElement.classList.add('fog-on');    /* canvases must be visible to be measured */
-    try {
-      canvases.forEach(function (c) { fogs.push(makeFog(c)); });
-    } catch (err) {
-      document.documentElement.classList.remove('fog-on'); /* keep the static smoke pictures */
-      if (window.console) console.warn('fog disabled:', err && err.message);
-      return;
-    }
-    if (reduce) return;                                  /* calm, still fog only */
-
-    var last = performance.now(), raf = 0;
-    function frame(now) {
-      raf = 0;
-      var dt = Math.min(1 / 30, (now - last) / 1000); last = now;
-      var any = false;
-      fogs.forEach(function (f) { if (f.visible) { f.tick(dt); any = true; } });
-      if (any && !document.hidden) raf = requestAnimationFrame(frame);
-    }
-    function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
-
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        fogs.forEach(function (f) { if (f.canvas === en.target) f.visible = en.isIntersecting; });
-      });
-      kick();
-    });
-    fogs.forEach(function (f) { io.observe(f.canvas); });
-    document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
-    var rz;
-    function resizeAll() { clearTimeout(rz); rz = setTimeout(function () { fogs.forEach(function (f) { f.resize(); }); kick(); }, 150); }
-    window.addEventListener('resize', resizeAll);
-
-    function stir(x, y, mx, my, burst) {
-      fogs.forEach(function (f) { if (f.visible) f.poke(x, y, mx, my, burst); });
-    }
-    var lx = null, ly = null;
-    document.addEventListener('pointermove', function (e) {
-      if (e.pointerType === 'touch') return;
-      var mx = lx === null ? 0 : e.clientX - lx, my = ly === null ? 0 : e.clientY - ly;
-      lx = e.clientX; ly = e.clientY;
-      if (mx || my) stir(e.clientX, e.clientY, mx, my, 0);
-    }, { passive: true });
-    var tx = null, ty = null;
-    document.addEventListener('touchstart', function (e) {
-      var p = e.touches[0]; tx = p.clientX; ty = p.clientY;
-      stir(tx, ty, 0, 0, 1);
-    }, { passive: true });
-    document.addEventListener('touchmove', function (e) {
-      var p = e.touches[0];
-      var mx = p.clientX - tx, my = p.clientY - ty;
-      tx = p.clientX; ty = p.clientY;
-      stir(p.clientX, p.clientY, mx, my, 0);
-      fogs.forEach(function (f) { f.poke(p.clientX, p.clientY, 0, 0, 1); });   /* keep holding */
-    }, { passive: true });
-    function lift() { fogs.forEach(function (f) { f.release(); }); }
-    document.addEventListener('touchend', lift, { passive: true });
-    document.addEventListener('touchcancel', lift, { passive: true });
-  })();
 })();
 </script>
+<script src="fog.js"></script>
 </body>
 </html>
